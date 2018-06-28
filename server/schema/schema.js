@@ -2,6 +2,12 @@ const graphql = require('graphql')
 
 const { GraphQLObjectType, GraphQLSchema, GraphQLString } = graphql
 
+// Temp data
+let book = [
+    { name: 'Moooa', genre: 'Fantasy', id: '1' },
+    { name: 'Aqoek', genre: 'Fantasy', id: '2' },
+    { name: 'Moana', genre: 'Action', id:'3' }
+]
 // Initiate Book
 const BookType = new GraphQLObjectType({
     name: 'Book',
@@ -27,5 +33,5 @@ const RootQuery = new GraphQLObjectType({
 })
 
 module.exports = new GraphQLSchema({
-    query: RootQuery
+    query: RootQuery 
 })
