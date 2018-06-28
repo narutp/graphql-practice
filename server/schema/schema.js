@@ -3,9 +3,9 @@ const _ = require('lodash')
 const { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLID, GraphQLInt } = graphql
 // Temp data
 let books = [
-    { name: 'Moooa', genre: 'Fantasy', id: '1' },
-    { name: 'Aqoek', genre: 'Fantasy', id: '2' },
-    { name: 'Moana', genre: 'Action', id:'3' }
+    { name: 'Moooa', genre: 'Fantasy', id: '1', authorId: '2' },
+    { name: 'Aqoek', genre: 'Fantasy', id: '2', authorId: '4' },
+    { name: 'Moana', genre: 'Action', id:'3', authorId: '3' }
 ]
 
 let authors = [
@@ -22,7 +22,13 @@ const BookType = new GraphQLObjectType({
     fields: () => ({
         id: {type: GraphQLID},
         name: {type: GraphQLString},
-        genre: {type: GraphQLString}
+        genre: {type: GraphQLString},
+        author: {
+            type: AuthorType,
+            resolve(parent, args) {
+                return _.find(authors, {id: parent.authorId})
+            }
+        }
     })
 })
 
