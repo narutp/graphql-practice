@@ -1,4 +1,5 @@
 const graphql = require('graphql')
+// lodash is for 
 const _ = require('lodash')
 const { 
     GraphQLObjectType,
@@ -8,6 +9,7 @@ const {
     GraphQLInt,
     GraphQLList
 } = graphql
+
 // Temp data
 let books = [
     {name: 'Name of the Wind', genre: 'Fantasy', id: '1', authorId: '1'},
@@ -60,6 +62,7 @@ const AuthorType = new GraphQLObjectType({
 })
 
 // Create root query to connect between front query with type object
+// Root query is like a first parent node that user want to query
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
