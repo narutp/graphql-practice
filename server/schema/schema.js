@@ -81,7 +81,12 @@ const RouteType = new GraphQLObjectType({
     fields: () => ({
         seq: {type: GraphQLInt},
         nameth: {type: GraphQLString},
-        geom: {type: GraphQLString}
+        geom: {
+            type: GraphQLString,
+            // resolve(parent, args) {
+            //     return 
+            // }
+        }
     })
 })
 
