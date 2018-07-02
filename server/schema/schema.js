@@ -36,14 +36,6 @@ let authors = [
 let user = []
 let coords = []
 
-const CoordsType = new GraphQLObjectType({
-    name: 'Coords',
-    fields: () => ({
-        id: {type: GraphQLID},
-        distance: {type: GraphQLInt}
-    })
-})
-
 // Initiate Book
 const BookType = new GraphQLObjectType({
     name: 'Book',
@@ -84,13 +76,28 @@ const UserType = new GraphQLObjectType({
     })
 })
 
+const RouteType = new GraphQLObjectType({
+    name: 'Route',
+    fields: () => ({
+        seq: {type: GraphQLInt},
+        nameth: {type: GraphQLString},
+        geom: {type: GraphQLString}
+    })
+})
+
 const CoordsType = new GraphQLObjectType({
     name: 'Coords',
     fields: () => ({
         id: {type: GraphQLInt},
         type: {type: GraphQLInt},
         distance: {type: GraphQLFloat},
-        time: {type: GraphQLFloat}
+        time: {type: GraphQLFloat},
+        route: {
+            type: new GraphQLList(RouteType),
+            // resolve(parent, args) {
+            //     return 
+            // }
+        }
     })
 })
 
@@ -103,7 +110,8 @@ async function fetchTempData() {
 
 async function fetchCoordinates() {
     let coordsRes = await axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
-    coords = coordsRes
+    coords = coordsRes.data.data
+    console.log('coords', coords)
 }
 
 // Create root query to connect between front query with type object
