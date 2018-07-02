@@ -3,14 +3,13 @@ const graphql = require('graphql')
 const _ = require('lodash')
 const axios = require('axios')
 
-const coords = axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
-
 const { 
     GraphQLObjectType,
     GraphQLSchema, 
     GraphQLString, 
     GraphQLID, 
     GraphQLInt,
+    GraphQLFloat,
     GraphQLList
 } = graphql
 
@@ -34,14 +33,8 @@ let authors = [
     { name: 'Seefa', age: '27', id:'5' },
 ]
 
-let users = [
-    { id: '1', title: 'a' },
-    { id: '2', title: 'b' },
-    { id: '3', title: 'b' },
-    { id: '4', title: 'b' },
-]
-
 let user = []
+let coords = []
 
 const CoordsType = new GraphQLObjectType({
     name: 'Coords',
@@ -91,12 +84,26 @@ const UserType = new GraphQLObjectType({
     })
 })
 
-async function fetchData() {
+const CoordsType = new GraphQLObjectType({
+    name: 'Coords',
+    fields: () => ({
+        id: {type: GraphQLInt},
+        type: {type: GraphQLInt},
+        distance: {type: GraphQLFloat},
+        time: {type: GraphQLFloat}
+    })
+})
+
+// Try to fetch data
+async function fetchTempData() {
     let coords = await axios.get('https://jsonplaceholder.typicode.com/posts/')
     // console.log('aa', coords)
     user = coords.data
-    console.log('userqqqqqqq', user)
-    console.log('users', users)
+}
+
+async function fetchCoordinates() {
+    let coordsRes = await axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
+    coords = coordsRes
 }
 
 // Create root query to connect between front query with type object
@@ -104,18 +111,19 @@ async function fetchData() {
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
-        // coords: {
-        //     type: CoordsType,
-        //     args: {id: {type: GraphQLID}},
-        //     async resolve(parent, args) {
-        //         return await axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
-        //     }
-        // },
+        coords: {
+            type: CoordsType,
+            args: {id: {type: GraphQLInt}},
+            async resolve(parent, args) {
+                await fetchCoordinates()
+                return _.find(coords, {id: args.id})
+            }
+        },
         user: {
             type: UserType,
             args: {id: {type: GraphQLInt}},
             async resolve(parent, args) {
-                await fetchData()
+                await fetchTempData()
                 return _.find(user, {id: args.id})
             }
         },
