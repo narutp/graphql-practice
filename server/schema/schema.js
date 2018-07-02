@@ -1,6 +1,10 @@
 const graphql = require('graphql')
 // lodash is for 
 const _ = require('lodash')
+const axios = require('axios')
+
+const coords = axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
+
 const { 
     GraphQLObjectType,
     GraphQLSchema, 
@@ -29,6 +33,24 @@ let authors = [
     { name: 'Bob', age: '35', id:'1' },
     { name: 'Seefa', age: '27', id:'5' },
 ]
+
+let users = [
+    { id: '1', title: 'a' },
+    { id: '2', title: 'b' },
+    { id: '3', title: 'b' },
+    { id: '4', title: 'b' },
+]
+
+let user = []
+
+const CoordsType = new GraphQLObjectType({
+    name: 'Coords',
+    fields: () => ({
+        id: {type: GraphQLID},
+        distance: {type: GraphQLInt}
+    })
+})
+
 // Initiate Book
 const BookType = new GraphQLObjectType({
     name: 'Book',
@@ -61,11 +83,42 @@ const AuthorType = new GraphQLObjectType({
     })
 })
 
+const UserType = new GraphQLObjectType({
+    name: 'User',
+    fields: () => ({
+        id: {type: GraphQLID},
+        title: {type: GraphQLString}
+    })
+})
+
+async function fetchData() {
+    let coords = await axios.get('https://jsonplaceholder.typicode.com/posts/')
+    // console.log('aa', coords)
+    user = coords.data
+    console.log('userqqqqqqq', user)
+    console.log('users', users)
+}
+
 // Create root query to connect between front query with type object
 // Root query is like a first parent node that user want to query
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
+        // coords: {
+        //     type: CoordsType,
+        //     args: {id: {type: GraphQLID}},
+        //     async resolve(parent, args) {
+        //         return await axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
+        //     }
+        // },
+        user: {
+            type: UserType,
+            args: {id: {type: GraphQLInt}},
+            async resolve(parent, args) {
+                await fetchData()
+                return _.find(user, {id: args.id})
+            }
+        },
         book: {
             type: BookType,                     // Connect object type
             args: {id: {type: GraphQLID}},  // Args is a parameter when query
@@ -96,5 +149,5 @@ const RootQuery = new GraphQLObjectType({
 })
 
 module.exports = new GraphQLSchema({
-    query: RootQuery 
+    query: RootQuery  
 })
