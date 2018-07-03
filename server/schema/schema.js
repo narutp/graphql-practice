@@ -76,22 +76,8 @@ const UserType = new GraphQLObjectType({
     })
 })
 
-const RouteType = new GraphQLObjectType({
-    name: 'Route',
-    fields: () => ({
-        seq: {type: GraphQLInt},
-        nameth: {type: GraphQLString},
-        geom: {
-            type: GraphQLString,
-            // resolve(parent, args) {
-            //     return 
-            // }
-        }
-    })
-})
-
 const CoordsType = new GraphQLObjectType({
-    name: 'Coords',
+    name: 'CoordsType',
     fields: () => ({
         id: {type: GraphQLInt},
         type: {type: GraphQLInt},
@@ -100,11 +86,46 @@ const CoordsType = new GraphQLObjectType({
         route: {
             type: new GraphQLList(RouteType),
             // resolve(parent, args) {
-            //     return 
+            //     return geom
             // }
         }
     })
 })
+
+const RouteType = new GraphQLObjectType({
+    name: 'Route',
+    fields: () => ({
+        seq: {type: GraphQLInt},
+        nameth: {type: GraphQLString},
+        geom: {type: GraphQLString}
+    })
+})
+
+// const GeomType = new GraphQLObjectType({
+//     name: 'Geom',
+//     fields: () => ({
+//         type: {type: GraphQLString},
+//         coordinates: {
+//             type: GraphQLString
+//         }
+//     })
+// })
+
+// const CoordinatesType = new GraphQLObjectType({
+//     name: 'Coordinates',
+//     fields: () => ({
+//         coords: {
+//             type: new GraphQLList(CoordsListType),
+//         }
+//     })
+// })
+
+// const CoordsListType = new GraphQLObjectType({
+//     name: 'Coords',
+//     fields: () => ({
+//         coord: {type: GraphQLInt}
+//     })
+// })
 
 // Try to fetch data
 async function fetchTempData() {
@@ -116,7 +137,14 @@ async function fetchTempData() {
 async function fetchCoordinates() {
     let coordsRes = await axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
     coords = coordsRes.data.data
-    console.log('coords', coords)
+    // coords[0].route.forEach((element) => {
+    //     console.log('element1', element.geom)
+    //     element.geom = JSON.parse(element.geom)
+    // });
+    // coords[0].route.forEach((element) => {
+    //     console.log('element2', element.geom)
+    // })
+    // console.log('coords', coords)
 }
 
 // Create root query to connect between front query with type object
