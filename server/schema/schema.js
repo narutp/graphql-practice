@@ -107,6 +107,7 @@ const RouteType = new GraphQLObjectType({
 //         type: {type: GraphQLString},
 //         coordinates: {
 //             type: GraphQLString
+
 //         }
 //     })
 // })
