@@ -1,6 +1,6 @@
 const axios = require('axios')
 
-describe('schema', () => {
+describe('author', () => {
     it('find user id and title', async() => {
         const res = await axios.post('http://localhost:4000/graphql', {
             query: 
